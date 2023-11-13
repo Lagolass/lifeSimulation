@@ -1,6 +1,6 @@
 package com.animal.lifesimulation.map.staging;
 
-import com.animal.lifesimulation.interfaces.Organism;
+import com.animal.lifesimulation.Organism;
 import com.animal.lifesimulation.map.MapSimulation;
 import com.animal.lifesimulation.map.SectionCoordinates;
 import com.animal.lifesimulation.map.SectionCycleData;

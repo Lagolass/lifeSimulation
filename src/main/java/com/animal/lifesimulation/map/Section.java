@@ -1,12 +1,10 @@
 package com.animal.lifesimulation.map;
 
-import com.animal.lifesimulation.interfaces.Organism;
+import com.animal.lifesimulation.Organism;
 import com.animal.lifesimulation.map.staging.*;
-import com.animal.lifesimulation.organisms.animal.Animal;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Section implements Callable<SectionCycleData> {
 

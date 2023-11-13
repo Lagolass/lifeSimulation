@@ -1,7 +1,5 @@
 package com.animal.lifesimulation;
 
-import com.animal.lifesimulation.interfaces.Organism;
-
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;

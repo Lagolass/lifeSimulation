@@ -1,7 +1,7 @@
 package com.animal.lifesimulation.map.staging;
 
-import com.animal.lifesimulation.interfaces.Organism;
 import com.animal.lifesimulation.map.SectionCycleData;
+import com.animal.lifesimulation.Organism;
 import com.animal.lifesimulation.organisms.Plant;
 import com.animal.lifesimulation.organisms.animal.Gender;
 

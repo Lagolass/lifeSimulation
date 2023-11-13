@@ -1,39 +1,38 @@
 package com.animal.lifesimulation.organisms.animal;
 
-import com.animal.lifesimulation.interfaces.Organism;
+import com.animal.lifesimulation.Organism;
+import com.animal.lifesimulation.interfaces.OrganismActions;
 import com.animal.lifesimulation.map.MapConfig;
 import com.animal.lifesimulation.organisms.Plant;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 
-public abstract class Animal implements Organism {
+public abstract class Animal extends Organism {
 
-    protected Gender gender;
     protected boolean wasReproduced = false;
-    protected float weight;
     protected float satisfaction;
     protected float wasEaten;
-    public float maxMeal;
-    public int maxMove;
     protected float hungerRatio = MapConfig.HUNGER_RATIO;
     protected float startingHungerRatio = MapConfig.STARTING_HUNGER_RATIO;
 
-    public void eat(Organism unit) {
-        float wasEaten = setSatisfaction(unit.getWeight());
+    @Override
+    public void eat(OrganismActions unit) {
+        float wasEaten = setSatisfaction(((Organism) unit).getWeight());
         if(unit instanceof Plant) {
             ((Plant) unit).changeWeight(wasEaten);
         }
     }
 
-    public Organism reproduction(Organism item) {
-        if(canReproduce(item)) {
+    @Override
+    public Organism reproduction(OrganismActions item) {
+        if(canReproduce((Organism) item)) {
             try {
                 Animal animal = (Animal) item.getClass().getDeclaredConstructor().newInstance();
 
-                animal.setWeight(item.getWeight());
-                animal.setMaxMeal(item.getMaxMeal());
-                animal.setMaxMove(item.getMaxMove());
+                animal.setWeight(((Organism) item).getWeight());
+                animal.setMaxMeal(((Organism) item).getMaxMeal());
+                animal.setMaxMove(((Organism) item).getMaxMove());
                 animal.setGender(Gender.randomGender());
                 animal.setWasReproduced(true);
 
@@ -52,32 +51,12 @@ public abstract class Animal implements Organism {
         return this.getGender() != item.getGender();
     }
 
-    public MoveDirections move() {
-        return MoveDirections.random();
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
     public boolean isWasReproduced() {
         return wasReproduced;
     }
 
     public void setWasReproduced(boolean wasReproduced) {
         this.wasReproduced = wasReproduced;
-    }
-
-    public float getWeight() {
-        return weight;
-    }
-
-    public void setWeight(float weight) {
-        this.weight = weight;
     }
 
     public float getSatisfaction() {
@@ -96,22 +75,11 @@ public abstract class Animal implements Organism {
         return wasEaten;
     }
 
-    public float getMaxMeal() {
-        return maxMeal;
-    }
-
+    @Override
     public void setMaxMeal(float maxMeal) {
         this.maxMeal = maxMeal;
         if(this.satisfaction == 0)
             this.satisfaction = floatFormat(this.maxMeal - this.maxMeal * this.startingHungerRatio);
-    }
-
-    public int getMaxMove() {
-        return maxMove;
-    }
-
-    public void setMaxMove(int maxMove) {
-        this.maxMove = maxMove;
     }
 
     public boolean isHungry() {

@@ -1,7 +1,7 @@
 package com.animal.lifesimulation.map.staging;
 
+import com.animal.lifesimulation.Organism;
 import com.animal.lifesimulation.OrganismData;
-import com.animal.lifesimulation.interfaces.Organism;
 import com.animal.lifesimulation.map.SectionCycleData;
 
 import java.util.*;

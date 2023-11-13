@@ -1,12 +1,11 @@
 package com.animal.lifesimulation.map;
 
-import com.animal.lifesimulation.interfaces.Organism;
+import com.animal.lifesimulation.Organism;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LivingStatistic {
@@ -18,7 +17,7 @@ public class LivingStatistic {
     protected HashMap<String, Integer> tickDiedPopulationList;
     protected Integer counterPopulation = 0;
     protected Integer counterMigration = 0;
-    protected Integer tikCounterMigration = 0;
+    protected Integer tickCounterMigration = 0;
     protected AtomicInteger counterDiedClasses;
     protected int maxClassUnitDied = MapConfig.MAX_CLASS_UNIT_DIED;
     protected boolean situationIsBad = false;
@@ -42,31 +41,57 @@ public class LivingStatistic {
         if(situationIsBad)
             return;
 
-        tickNewPopulationList.clear();
-        tickDiedPopulationList.clear();
-        tikCounterMigration = 0;
-        for (SectionCycleData sectionCycleData : sectionCycleDataList) {
-            if (sectionCycleData.getAddedPopulation().size() > 0) {
-                for (Map.Entry<String, Integer> v : sectionCycleData.getAddedPopulation().entrySet()) {
-                    int value = tickNewPopulationList.getOrDefault(v.getKey(), 0);
-                    tickNewPopulationList.put(v.getKey(), value + v.getValue());
-                }
-            }
-            if (sectionCycleData.getDiedPopulation().size() > 0) {
-                for (Map.Entry<String, Integer> v : sectionCycleData.getDiedPopulation().entrySet()) {
-                    int value = tickDiedPopulationList.getOrDefault(v.getKey(), 0);
-                    tickDiedPopulationList.put(v.getKey(), value + v.getValue());
-                }
-            }
+        resetTickData();
 
-            if (sectionCycleData.getMigrationList().size() > 0) {
-                for (Map.Entry<String, ArrayList<Organism>> v : sectionCycleData.getMigrationList().entrySet()) {
-                    counterMigration += v.getValue().size();
-                    tikCounterMigration += v.getValue().size();
-                }
-            }
+        for (SectionCycleData sectionCycleData : sectionCycleDataList) {
+
+            calculateTickNew(sectionCycleData.getAddedPopulation());
+
+            calculateTickDied(sectionCycleData.getDiedPopulation());
+
+            calculateTickMigration(sectionCycleData.getMigrationList());
+
         }
 
+        updateTotalPopulation();
+
+        detectSituation();
+    }
+
+    private void resetTickData() {
+        tickNewPopulationList.clear();
+        tickDiedPopulationList.clear();
+        tickCounterMigration = 0;
+    }
+
+    private void calculateTickNew(HashMap<String, Integer> addedPopulation) {
+        if (addedPopulation.size() > 0) {
+            for (Map.Entry<String, Integer> v : addedPopulation.entrySet()) {
+                int value = tickNewPopulationList.getOrDefault(v.getKey(), 0);
+                tickNewPopulationList.put(v.getKey(), value + v.getValue());
+            }
+        }
+    }
+
+    private void calculateTickDied(HashMap<String, Integer> diedPopulation) {
+        if (diedPopulation.size() > 0) {
+            for (Map.Entry<String, Integer> v : diedPopulation.entrySet()) {
+                int value = tickDiedPopulationList.getOrDefault(v.getKey(), 0);
+                tickDiedPopulationList.put(v.getKey(), value + v.getValue());
+            }
+        }
+    }
+
+    private void calculateTickMigration(HashMap<String, ArrayList<Organism>> migrationList) {
+        if (migrationList.size() > 0) {
+            for (Map.Entry<String, ArrayList<Organism>> v : migrationList.entrySet()) {
+                counterMigration += v.getValue().size();
+                tickCounterMigration += v.getValue().size();
+            }
+        }
+    }
+
+    private void updateTotalPopulation() {
         if(tickNewPopulationList.size() > 0) {
             for (Map.Entry<String, Integer> v : tickNewPopulationList.entrySet()) {
                 int value = totalPopulationList.getOrDefault(v.getKey(), 0);
@@ -79,8 +104,6 @@ public class LivingStatistic {
                 totalPopulationList.put(v.getKey(), value - v.getValue());
             }
         }
-
-        detectSituation();
     }
 
     private void detectSituation() {
@@ -117,7 +140,7 @@ public class LivingStatistic {
         }
 
         outData.append("Total Population: " + counterPopulation + "\n");
-        outData.append("Value All Migration: " + counterMigration + " (" + tikCounterMigration + ")" + "\n");
+        outData.append("Value All Migration: " + counterMigration + " (" + tickCounterMigration + ")" + "\n");
         outData.append("Died classes of animal: " + counterDiedClasses.toString() + "\n");
 
         outData.append("========================================\n");

@@ -1,6 +1,6 @@
 package com.animal.lifesimulation.map;
 
-import com.animal.lifesimulation.interfaces.Organism;
+import com.animal.lifesimulation.Organism;
 
 import java.util.ArrayList;
 import java.util.HashMap;

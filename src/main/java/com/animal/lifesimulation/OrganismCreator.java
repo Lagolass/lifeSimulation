@@ -1,7 +1,5 @@
 package com.animal.lifesimulation;
 
-import com.animal.lifesimulation.interfaces.Organism;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;

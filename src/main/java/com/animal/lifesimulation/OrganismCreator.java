@@ -9,6 +9,7 @@ import com.animal.lifesimulation.organisms.animal.Gender;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
+import java.util.stream.Collectors;
 
 public class OrganismCreator {
     protected Map<String, OrganismData> organismsData;
@@ -60,7 +61,7 @@ public class OrganismCreator {
     }
 
     private static Map<String, OrganismData> importJsonData(String pathToJsonFile) {
-        Map<String, OrganismData> map = new HashMap<>();
+        Map<String, OrganismData> filteredMap = new HashMap<>();
 
         try {
             String data = Files.readString(Path.of(pathToJsonFile));
@@ -68,11 +69,26 @@ public class OrganismCreator {
             Gson gson = new Gson();
             Type type = new TypeToken<Map<String, OrganismData>>(){}.getType();
 
-            map = gson.fromJson(data, type);
+            Map<String, OrganismData> map = gson.fromJson(data, type);
+
+            OrganismAllowedList[] allowedKeys = OrganismAllowedList.values();
+
+            filteredMap = map.entrySet().stream()
+                    .filter(entry -> isValidKey(entry.getKey(), allowedKeys))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         } catch (IOException e) {
 
         }
-        return map;
+        return filteredMap;
+    }
+
+    private static boolean isValidKey(String key, OrganismAllowedList[] allowedKeys) {
+        for (OrganismAllowedList allowedKey : allowedKeys) {
+            if (allowedKey.name().equalsIgnoreCase(key)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
